@@ -1,0 +1,29 @@
+{
+  "name": "rodrigovargas-fcc-picterest",
+  "version": "1.0.0",
+  "description": "A pinterest clone app.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigovargas/fcc-pinterest-clone"
+  },
+  "homepage": "http://github.com/Rodrigo-Vargas/fcc-pinterest-clone",
+  "bugs": "https://github.com/Rodrigo-Vargas/fcc-pinterest-clone/issues",
+  "keywords": [
+    "MEAN",
+    "MongoDB",
+    "Express",
+    "Angular",
+    "Node",
+    "javascript"
+  ],
+  "author": "Rodrigo Vargas",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.6",
+    "mongoose": "^4.5.5",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2"
+  }
+}
