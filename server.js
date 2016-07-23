@@ -3,7 +3,6 @@
 var bodyParser = require('body-parser');
 var express    = require('express');
 var morgan     = require('morgan');
-var passport   = require('passport');
 var mongoose   = require('mongoose');
 var jwt        = require('jsonwebtoken');
 
@@ -29,9 +28,6 @@ db.once('open', function() {
    app.use(bodyParser.urlencoded({
       extended: true
    }));
-
-   //require('./config/passport')(passport);
-   //app.use(passport.initialize());
 
    routes(app);
 
