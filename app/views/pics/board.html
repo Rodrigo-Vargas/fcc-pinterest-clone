@@ -1,0 +1,22 @@
+<div ng-include src="'views/header.html'"></div>
+
+<div class="grid">
+  <div ng-repeat="pic in pics" class="grid-item" on-finish-render="ngRepeatFinished">
+    <div class="pic-card">
+      <img class="img-responsive" src="{{ pic.url }}" alt="">
+      <h2 class="pin-title">A pin text</h2>
+
+      <div class="pin-meta">
+        <div class="row">
+          <div class="col-md-6">
+            <a href="/board/{{pic.owner._id}}">Rodrigo Vargas</a>
+          </div>
+          <div class="col-md-6">
+            <span>5</span>
+            <i class="fa fa-star"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,10 +3,21 @@
 angular
   .module('pinterestClone', [
         'ngRoute',
-        'ngCookies',
-        'wu.masonry'
+        'ngCookies'
         ]
   )
+  .directive('onFinishRender', function ($timeout) {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+        if (scope.$last === true) {
+          $timeout(function () {
+            scope.$emit(attr.onFinishRender);
+          });
+        }
+      }
+    }
+  })
   .factory('UserService', function($cookies) {
     var userInfo;
 
@@ -17,8 +28,6 @@ angular
           if ($cookies.get('userInfo'))
             userInfo = JSON.parse($cookies.get('userInfo'));
         }
-
-        console.log(userInfo);
 
         return userInfo;
       },
@@ -38,7 +47,7 @@ angular
   .config(function ($routeProvider, $locationProvider) {
     $routeProvider
     .when('/', {
-      templateUrl : 'views/pics/index.html',
+      templateUrl : 'views/pics/board.html',
       controller : 'PicsCtrl'
     })
     .when('/signup', {

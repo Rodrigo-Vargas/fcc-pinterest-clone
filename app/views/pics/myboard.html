@@ -3,12 +3,13 @@
 
 <a href="/pics/my/add">Add pics</a>
 
-<div class="row">
-  <div ng-repeat="pic in pics" class="col-md-4 pic-card">
-
-    <img class="img-responsive" src="{{ pic.url }}" alt="">
-    <a class="btn" ng-click="removePic(pic._id)">
-      <i class="fa fa-trash"></i>
-    </a>
+<div class="grid">
+  <div ng-repeat="pic in pics" class="grid-item" on-finish-render="ngRepeatFinished">
+    <div class="pic-card">
+      <img class="img-responsive" src="{{ pic.url }}" alt="">
+      <a class="btn" ng-click="removePic(pic._id)">
+        <i class="fa fa-trash"></i>
+      </a>
+    </div>
   </div>
 </div>

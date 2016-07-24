@@ -3,3 +3,9 @@
   border-radius: 5px;
   padding: 10px;
 }
+
+.pin-title {
+  text-align: center;
+}
+
+.grid-item { width: 300px; }

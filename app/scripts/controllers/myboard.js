@@ -15,6 +15,14 @@ angular.module('pinterestClone')
     'Accept': 'application/json;odata=verbose'
   };
 
+  $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+    $('.grid').masonry({
+      // options
+      itemSelector: '.grid-item',
+      columnWidth: 330
+    });
+  });
+
   $scope.getMyPics = function(){
     $http(
     {

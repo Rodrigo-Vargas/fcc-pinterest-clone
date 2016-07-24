@@ -4,6 +4,14 @@ angular.module('pinterestClone')
 .controller('PicsCtrl', function($scope, $http, UserService, $location){
   $scope.currentUser = UserService.getCurrentUserInfo();
 
+  $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+    $('.grid').masonry({
+      // options
+      itemSelector: '.grid-item',
+      columnWidth: 330
+    });
+  });
+
   $scope.getPics = function(){
     $http(
     {
