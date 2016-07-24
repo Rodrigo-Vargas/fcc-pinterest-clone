@@ -30,7 +30,5 @@ angular.module('pinterestClone')
         alert(response);
       }
     );
-  }
-
-  $scope.getPics();
+  } 
 });

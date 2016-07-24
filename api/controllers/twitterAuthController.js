@@ -76,7 +76,7 @@ TwitterAuthController.callback = function(req, res){
 
       var token = Jwt.sign(newUser, Config.secret);
 
-      return res.redirect('/settings?token=' + token + '&name=' + screenName);
+      return res.redirect('/settings?token=' + token + '&name=' + screenName + '&userId=' + newUser._id);
     });
   });
 }

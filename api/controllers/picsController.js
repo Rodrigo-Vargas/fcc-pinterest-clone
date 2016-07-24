@@ -45,4 +45,39 @@ PicsController.all = function(req, res) {
   });
 }
 
+PicsController.fromUser = function(req, res) {
+  var token = Helpers.getToken(req.headers);
+  
+  Pic.find({ owner : req.params.userId })
+ .populate('owner')
+ .exec(function(err, pics) {
+    return res.json({success: true, pics : pics});
+  });
+}
+
+PicsController.destroy = function(req, res) {
+  var token = Helpers.getToken(req.headers);
+
+  if (!token)
+    return res.status(403).send({success: false, msg: 'No token provided.'});
+
+  var decoded = Jwt.decode(token, Config.secret);
+  User.findOne({
+    '_id': decoded._doc._id
+  }, function(err, user) {
+    if (err) 
+      throw err;
+
+    if (!user)
+      return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+    
+    Pic.find({ _id: req.params.picId }).remove().exec(function (err, book) {
+      if (err) 
+        throw err;
+      
+      return res.json({success: true});
+    });    
+  });
+}
+
 module.exports = PicsController;

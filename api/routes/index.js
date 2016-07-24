@@ -13,6 +13,10 @@ module.exports = function (app) {
 
   app.get('/api/pics/all', PicsController.all);
 
+  app.get('/api/pics/user/:userId', PicsController.fromUser);
+
+  app.post('/api/pics/destroy/:picId', PicsController.destroy);
+
   app.get('*', function(req, res) {
     res.sendfile('./app/index.html');
   });
