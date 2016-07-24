@@ -1,8 +1,13 @@
+var AuthConfig  = require(process.cwd() + '/config/auth')
+var Jwt         = require('jsonwebtoken');
+var User        = require('../models/user');
+var Config      = require('../../config/secret');
+
+var UsersController  = require(process.cwd() + '/app/controllers/usersController.js');
+
 module.exports = function (app) {
   var oAuthToken;
   var oAuthSecret;
-
-  var AuthConfig = require(process.cwd() + '/config/auth')
 
   app.get('/api/login/callback', function(req, res){
     var request = require("request");
@@ -26,8 +31,6 @@ module.exports = function (app) {
       if (error) 
         throw new Error(error);
 
-      console.log(body);
-
       var pattern = /oauth_token=(.+)&oauth_token_secret=(.+)&user_id=(.+)&screen_name=(.+)&x_auth_expires=0/;
       var results = pattern.exec(body);
 
@@ -36,11 +39,20 @@ module.exports = function (app) {
       var userId = results[3];
       var screenName = results[4];
 
-      return res.json({ oauthToken : oAuthToken, 
-                        oauthTokenSecret : oAuthSecret, 
-                        userId : userId, 
-                        screenName : screenName
-                      });
+      var newUser = new User();
+        newUser.local.name = screenName;
+        newUser.local.email = "";
+        newUser.twitter.id = userId;
+
+        newUser.save(function(err) {
+          if (err) {
+            return res.json({success: false, msg: 'Username already exists.'});
+          }
+
+          var token = Jwt.sign(newUser, Config.secret);
+
+          return res.redirect('/settings?token=' + token + '&name=' + screenName);
+        });
     });
   });
 
@@ -70,6 +82,8 @@ module.exports = function (app) {
       res.redirect('https://api.twitter.com/oauth/authenticate?oauth_token=' + oAuthToken);
     });
   });
+
+  app.post('/api/users/update/', UsersController.update);
 
   app.get('*', function(req, res) {
     res.sendfile('./app/index.html');

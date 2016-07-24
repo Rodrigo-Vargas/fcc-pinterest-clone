@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>Picterest</title>
+  <base href="/">
 </head>
-<body>
-  Hello world!
-  <a href="/auth/twitter" class="btn btn-default">Twitter</a>
+<body ng-app="pinterestClone">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <div ng-view>
+    Hello world!
+    <a href="/auth/twitter" class="btn btn-default">Twitter</a>
+  </div>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.js"></script>
+  <script type="text/javascript" src="scripts/core.js"></script>
 </body>
 </html>
