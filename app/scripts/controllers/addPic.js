@@ -1,24 +1,20 @@
 'use strict';
 
 angular.module('pinterestClone')
-.controller('PicsCtrl', function($scope, $http, UserService, $location){
+.controller('AddPicsCtrl', function($scope, $http, UserService, $location){
   $scope.currentUser = UserService.getCurrentUserInfo();
 
-  $scope.getPics = function(){
-    $http(
-    {
-      method: 'GET',
-      url: '/api/pics/all'
-    })
-    .then(function successCallback(response) {
-        $scope.pics = response.data.pics;
-      },
-      function errorCallback(response) {
-        alert(response);
-      }
-    );
+  if (!$scope.currentUser)
+  {
+    $location.path('/login');
+    return;
   }
 
+  var headers = {
+    'Authorization': $scope.currentUser.token,
+    'Accept': 'application/json;odata=verbose'
+  };
+  
   $scope.addPic = function(){
     $http(
     {

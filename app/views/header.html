@@ -12,9 +12,10 @@
     <div id="navbar" class="navbar-collapse collapse">      
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/" class="nav-item">World Board</a></li>
-        <li><a href="/myboard" class="nav-item">My board</a></li>
+        <li><a href="/myboard" class="nav-item" ng-show="currentUser">My board</a></li>
         <li><a href="/settings" class="nav-item">{{ currentUser.name }}</a></li>
-        <li><a href="/logout" class="nav-item">Logout</a></li>
+        <li><a href="/login" class="nav-item" ng-hide="currentUser">Login</a></li>
+        <li><a href="/logout" class="nav-item" ng-show="currentUser">Logout</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

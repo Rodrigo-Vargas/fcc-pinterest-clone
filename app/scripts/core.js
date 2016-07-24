@@ -17,6 +17,8 @@ angular
             userInfo = JSON.parse($cookies.get('userInfo'));
         }
 
+        console.log(userInfo);
+
         return userInfo;
       },
       setCurrentUserInfo : function(value){
@@ -46,6 +48,10 @@ angular
       templateUrl: 'views/login.html',
       controller: 'UserCtrl'
     })
+    .when('/logout', {
+      controller : 'LogoutCtrl',
+      templateUrl : 'views/logout.html'
+    })
     .when('/auth/twitter',{
       redirectTo: function(obj, requestedPath) {
         window.location.href = '/auth/twitter';
@@ -53,11 +59,11 @@ angular
     })
     .when('/myboard',{
       templateUrl: 'views/pics/myboard.html',
-      controller: 'PicsCtrl'
+      controller: 'MyBoardCtrl'
     })
     .when('/pics/my/add',{
       templateUrl: 'views/pics/add.html',
-      controller: 'PicsCtrl'
+      controller: 'AddPicsCtrl'
     })
     .when('/settings', {
       templateUrl : 'views/settings/index.html',
@@ -65,35 +71,7 @@ angular
     });
 
     $locationProvider.html5Mode(true);
-  })
-  .controller('MyBoardCtrl', function($scope, $location, $http, UserService){
-    $scope.currentUser = UserService.getCurrentUserInfo();
-    
-    if (!$scope.currentUser)
-    {
-      $location.path('/login');
-      return;
-    }
-
-    var headers = {
-      'Authorization': $scope.currentUser.token,
-      'Accept': 'application/json;odata=verbose'
-    };
-
-    $http(
-      {
-        method: 'GET',
-        url: '/api/pics/user/' + $scope.currentUser.id,
-        headers : headers
-      })
-      .then(function successCallback(response) {
-          
-        },
-        function errorCallback(response) {
-          alert(response);
-        }
-      );
-  })
+  })  
   .controller('SettingsCtrl', function($scope, $http, $location, UserService){
     $scope.currentUser = UserService.getCurrentUserInfo();
 

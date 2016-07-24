@@ -35,4 +35,14 @@ PicsController.add = function(req, res) {
   });  
 }
 
+PicsController.all = function(req, res) {
+  var token = Helpers.getToken(req.headers);
+  
+  Pic.find({})
+ .populate('owner')
+ .exec(function(err, pics) {
+    return res.json({success: true, pics : pics});
+  });
+}
+
 module.exports = PicsController;
