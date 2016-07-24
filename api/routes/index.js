@@ -1,9 +1,10 @@
-var AuthConfig  = require(process.cwd() + '/config/auth')
-var Jwt         = require('jsonwebtoken');
-var User        = require('../models/user');
-var Config      = require('../../config/secret');
+var AuthConfig    = require(process.cwd() + '/config/auth')
+var Jwt           = require('jsonwebtoken');
+var User          = require('../models/user');
+var Config        = require('../../config/secret');
 
-var UsersController  = require(process.cwd() + '/api/controllers/usersController.js');
+var UsersController = require(process.cwd() + '/api/controllers/usersController.js');
+var PicsController  = require(process.cwd() + '/api/controllers/picsController.js');
 
 module.exports = function (app) {
   var oAuthToken;
@@ -88,6 +89,8 @@ module.exports = function (app) {
   });
 
   app.post('/api/users/update', UsersController.update);
+
+  app.post('/api/pics/add', PicsController.add)
 
   app.get('*', function(req, res) {
     res.sendfile('./app/index.html');

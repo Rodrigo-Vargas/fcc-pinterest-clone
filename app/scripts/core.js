@@ -13,7 +13,8 @@ angular
       getCurrentUserInfo : function(){
         if (!userInfo)
         {
-          userInfo = JSON.parse($cookies.get('userInfo'));
+          if ($cookies.get('userInfo'))
+            userInfo = JSON.parse($cookies.get('userInfo'));
         }
 
         return userInfo;
@@ -37,6 +38,27 @@ angular
       templateUrl : 'views/pics/index.html',
       controller : 'PicsCtrl'
     })
+    .when('/signup', {
+      templateUrl: 'views/signup.html',
+      controller: 'UserCtrl'
+    })
+    .when('/login', {
+      templateUrl: 'views/login.html',
+      controller: 'UserCtrl'
+    })
+    .when('/auth/twitter',{
+      redirectTo: function(obj, requestedPath) {
+        window.location.href = '/auth/twitter';
+      }
+    })
+    .when('/myboard',{
+      templateUrl: 'views/pics/myboard.html',
+      controller: 'PicsCtrl'
+    })
+    .when('/pics/my/add',{
+      templateUrl: 'views/pics/add.html',
+      controller: 'PicsCtrl'
+    })
     .when('/settings', {
       templateUrl : 'views/settings/index.html',
       controller : 'SettingsCtrl'
@@ -44,10 +66,33 @@ angular
 
     $locationProvider.html5Mode(true);
   })
-  .controller('PicsCtrl', function($scope, UserService){
+  .controller('MyBoardCtrl', function($scope, $location, $http, UserService){
     $scope.currentUser = UserService.getCurrentUserInfo();
     
-    //alert($scope.currentUser.name);
+    if (!$scope.currentUser)
+    {
+      $location.path('/login');
+      return;
+    }
+
+    var headers = {
+      'Authorization': $scope.currentUser.token,
+      'Accept': 'application/json;odata=verbose'
+    };
+
+    $http(
+      {
+        method: 'GET',
+        url: '/api/pics/user/' + $scope.currentUser.id,
+        headers : headers
+      })
+      .then(function successCallback(response) {
+          
+        },
+        function errorCallback(response) {
+          alert(response);
+        }
+      );
   })
   .controller('SettingsCtrl', function($scope, $http, $location, UserService){
     $scope.currentUser = UserService.getCurrentUserInfo();
