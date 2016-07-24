@@ -3,7 +3,7 @@ var Jwt         = require('jsonwebtoken');
 var User        = require('../models/user');
 var Config      = require('../../config/secret');
 
-var UsersController  = require(process.cwd() + '/app/controllers/usersController.js');
+var UsersController  = require(process.cwd() + '/api/controllers/usersController.js');
 
 module.exports = function (app) {
   var oAuthToken;
@@ -39,20 +39,24 @@ module.exports = function (app) {
       var userId = results[3];
       var screenName = results[4];
 
-      var newUser = new User();
-        newUser.local.name = screenName;
-        newUser.local.email = "";
-        newUser.twitter.id = userId;
+      User.findOneAndUpdate({ 'twitter.id' : userId }, 
+      { 
+        'local.name' : screenName,
+        'local.email' : "",
+        'local.twitter.id' : userId
+      }, 
+      {  upsert: true, new: true, setDefaultsOnInsert: true }, 
+      function(err, newUser) {
+        if (err) {
+          return res.json({success: false, msg: 'Username already exists.'});
+        }
 
-        newUser.save(function(err) {
-          if (err) {
-            return res.json({success: false, msg: 'Username already exists.'});
-          }
+        console.log(newUser);
 
-          var token = Jwt.sign(newUser, Config.secret);
+        var token = Jwt.sign(newUser, Config.secret);
 
-          return res.redirect('/settings?token=' + token + '&name=' + screenName);
-        });
+        return res.redirect('/settings?token=' + token + '&name=' + screenName);
+      });
     });
   });
 
@@ -83,7 +87,7 @@ module.exports = function (app) {
     });
   });
 
-  app.post('/api/users/update/', UsersController.update);
+  app.post('/api/users/update', UsersController.update);
 
   app.get('*', function(req, res) {
     res.sendfile('./app/index.html');
