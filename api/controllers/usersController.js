@@ -21,11 +21,19 @@ UsersController.update = function(req, res) {
 
     user.local.name  = req.body.user.name;
     user.local.email = req.body.user.email;
-    user.local.password = user.generateHash(req.body.user.password);
+
+    if (!req.body.user.password)
+      user.local.password = user.generateHash(req.body.user.password);
 
     user.save();
 
-    return res.json({success: true});
+    var updatedUser = {  
+      name : user.getName(), 
+      token : 'JWT ' + token,
+      id :  user._id
+    };
+
+    return res.json({success: true, user : updatedUser });
   });
 }
 
@@ -85,6 +93,29 @@ UsersController.signup = function(req, res) {
                 message: 'Successful created new user.',
                 user : user });
   });  
+}
+
+UsersController.getCurrent = function(req, res) {
+   var token = Helpers.getToken(req.headers);
+  
+  if (!token)
+    return res.status(403).send({success: false, message: 'No token provided.'});
+
+  var decoded = Jwt.decode(token, Config.secret);
+  
+  User.findOne({
+    '_id': decoded._doc._id
+  }, function(err, user) {
+    if (err) 
+      throw err;
+
+    var currentUser = {
+                        name : user.getName(),
+                        email : user.local.email
+                      }
+
+    return res.json({success: true, user : currentUser });
+  });
 }
 
 module.exports = UsersController;

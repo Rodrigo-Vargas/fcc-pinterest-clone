@@ -15,12 +15,15 @@ TwitterAuthController.login = function(req, res){
        'cache-control': 'no-cache',
        authorization:   'OAuth oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
                       + 'oauth_signature_method="HMAC-SHA1",'
-                      + 'oauth_timestamp="1469313925",oauth_nonce="GgW0r4",'
+                      + 'oauth_timestamp="' + Math.floor(new Date().getTime() / 1000) + '"'
+                      + ',oauth_nonce="GgW0r4",'
                       + 'oauth_version="1.0",oauth_signature="dSN03s4yhcVthUjUK3Y8cgK2cWo%3D"' } };
 
   request(options, function (error, response, body) {
     if (error) 
       throw new Error(error);
+
+    console.log(body);
 
     var pattern = /oauth_token=(.+)&oauth_token_secret=(.+)&oauth_callback_confirmed=true/; 
     var results = pattern.exec(body);
@@ -43,7 +46,7 @@ TwitterAuthController.callback = function(req, res){
        'authorization': 'OAuth oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
        + 'oauth_token="' + req.query.oauth_token + '",'
        + 'oauth_signature_method="HMAC-SHA1",'
-       + 'oauth_timestamp="1469315331",'
+       + 'oauth_timestamp="' + Math.floor(new Date().getTime() / 1000) + '",'
        + 'oauth_nonce="QmMmNI",'
        + 'oauth_version="1.0",'
        + 'oauth_signature="cX0TO3xlkatnMvx%2BEv6pdoU7Tbk%3D"',

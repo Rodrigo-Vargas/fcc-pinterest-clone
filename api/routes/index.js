@@ -9,6 +9,8 @@ module.exports = function (app) {
 
   app.post('/api/users/update', UsersController.update);
 
+  app.get('/api/users/getCurrent', UsersController.getCurrent);
+
   app.post('/api/pics/add', PicsController.add)
 
   app.get('/api/pics/all', PicsController.all);

@@ -10,6 +10,10 @@ angular.module('pinterestClone')
       itemSelector: '.grid-item',
       columnWidth: 330
     });
+
+    $('img').error(function(){
+      $(this).attr('src', 'images/missing.png');
+    });
   });
 
   $scope.getPics = function(){

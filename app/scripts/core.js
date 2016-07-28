@@ -82,6 +82,10 @@ angular
     .when('/settings', {
       templateUrl : 'views/settings/index.html',
       controller : 'SettingsCtrl'
+    })
+    .when('/settings/:token', {
+      templateUrl : 'views/settings/index.html',
+      controller : 'SettingsCtrl'
     });
 
     $locationProvider.html5Mode(true);
