@@ -71,6 +71,10 @@ angular
       templateUrl: 'views/pics/myboard.html',
       controller: 'MyBoardCtrl'
     })
+    .when('/board/:boardId',{
+      templateUrl: 'views/pics/board.html',
+      controller: 'PicsCtrl'
+    })
     .when('/pics/my/add',{
       templateUrl: 'views/pics/add.html',
       controller: 'AddPicsCtrl'

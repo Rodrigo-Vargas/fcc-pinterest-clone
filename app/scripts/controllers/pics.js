@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pinterestClone')
-.controller('PicsCtrl', function($scope, $http, UserService, $location){
+.controller('PicsCtrl', function($scope, $http, UserService, $location, $routeParams){
   $scope.currentUser = UserService.getCurrentUserInfo();
 
   $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
@@ -44,5 +44,23 @@ angular.module('pinterestClone')
     );
   }
 
-  $scope.getPics();
+  $scope.getPicsOfBoard = function(boardId) {
+    $http(
+    {
+      method: 'GET',
+      url: '/api/pics/user/' + boardId
+    })
+    .then(function successCallback(response) {
+        $scope.pics = response.data.pics;
+      },
+      function errorCallback(response) {
+        alert(response);
+      }
+    );
+  }
+
+  if ($routeParams.boardId)
+    $scope.getPicsOfBoard($routeParams.boardId);
+  else
+    $scope.getPics();
 });

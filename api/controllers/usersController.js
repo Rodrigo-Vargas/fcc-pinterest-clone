@@ -78,7 +78,7 @@ UsersController.signup = function(req, res) {
     var user =  { 
                   name : newUser.getName(), 
                   token : 'JWT ' + token,
-                  id : user._id
+                  id : newUser._id
                 };
 
     return res.json({  success: true, 
