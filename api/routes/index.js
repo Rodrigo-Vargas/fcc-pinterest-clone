@@ -17,6 +17,10 @@ module.exports = function (app) {
 
   app.post('/api/pics/destroy/:picId', PicsController.destroy);
 
+  app.post('/api/signup', UsersController.signup);
+
+  app.post('/api/login', UsersController.login);
+
   app.get('*', function(req, res) {
     res.sendfile('./app/index.html');
   });

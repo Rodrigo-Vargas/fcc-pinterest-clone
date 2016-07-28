@@ -14,8 +14,12 @@ angular.module('pinterestClone')
           if (response.data.success == true){
             UserService.setCurrentUserInfo(response.data.user);
 
-            $location.path("/books");
-          }          
+            $location.path("/");
+          }
+          else
+          {
+            $scope.message = response.data.message;
+          }
         }, function errorCallback(response) {
           alert(response.data);
         });
@@ -33,8 +37,12 @@ angular.module('pinterestClone')
           if (response.data.success == true){
             UserService.setCurrentUserInfo(response.data.user);
 
-            $location.path("/books");
-          }          
+            $location.path("/");
+          }
+          else
+          {
+            $scope.message = response.data.message;
+          }
         }, function errorCallback(response) {
           alert(response.data);
         });

@@ -9,3 +9,30 @@
 }
 
 .grid-item { width: 300px; }
+
+.form-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0 auto;
+  padding: 20px;
+  position: absolute;
+  right: 30%;
+  top: 30%;
+  width: 40%;
+}
+
+.light-message {
+  display: block;
+  text-align: center;
+}
+
+.form-wrapper a {
+  display: block;
+  margin: 5px 0;
+  text-align: center;
+}
+
+.error-message-wrapper {
+  color: red;
+  padding: 5px;
+}
