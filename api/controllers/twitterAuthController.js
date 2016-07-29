@@ -8,22 +8,24 @@ function TwitterAuthController () { }
 TwitterAuthController.login = function(req, res){
   var request = require("request");
 
-  var options = { method: 'POST',
+  var options = { 
+    method: 'POST',
     url: 'https://api.twitter.com/oauth/request_token',
     headers: 
-     { 'postman-token': '4332c481-b813-1ada-134a-31cd9a00e699',
-       'cache-control': 'no-cache',
-       authorization:   'OAuth oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
-                      + 'oauth_signature_method="HMAC-SHA1",'
-                      + 'oauth_timestamp="' + Math.floor(new Date().getTime() / 1000) + '"'
-                      + ',oauth_nonce="GgW0r4",'
-                      + 'oauth_version="1.0",oauth_signature="dSN03s4yhcVthUjUK3Y8cgK2cWo%3D"' } };
+    { 
+      'cache-control': 'no-cache',
+      'authorization': 'OAuth  oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
+                            + 'oauth_signature_method="HMAC-SHA1",'
+                            + 'oauth_timestamp="' + AuthConfig.twitter.timestamp + '",'
+                            + 'oauth_nonce="DtOesU",'
+                            + 'oauth_version="1.0",'
+                            + 'oauth_signature="' + AuthConfig.twitter.signature + '"' 
+    }        
+   };
 
   request(options, function (error, response, body) {
     if (error) 
       throw new Error(error);
-
-    console.log(body);
 
     var pattern = /oauth_token=(.+)&oauth_token_secret=(.+)&oauth_callback_confirmed=true/; 
     var results = pattern.exec(body);
@@ -65,22 +67,29 @@ TwitterAuthController.callback = function(req, res){
     var userId = results[3];
     var screenName = results[4];
 
-    User.findOneAndUpdate({ 'twitter.id' : userId }, 
-    { 
-      'local.name' : screenName,
-      'local.email' : "",
-      'local.twitter.id' : userId
-    }, 
-    {  upsert: true, new: true, setDefaultsOnInsert: true }, 
-    function(err, newUser) {
-      if (err) {
-        return res.json({success: false, msg: 'Username already exists.'});
+    User.findOne(
+      { 'twitter.id' : userId }, 
+      function(err, user) {
+        if (err)
+          return res.json({success: false });
+
+        if (user)
+        {
+          var token = Jwt.sign(user, Config.secret);
+          return res.redirect('/twitterCallback/' + token);
+        }
+        else
+        {
+          var newUser = new User();
+          newUser.local.name = screenName;
+          newUser.local.email = "";
+
+          var token = Jwt.sign(newUser, Config.secret);
+          
+          return res.redirect('/settings/' + token + '/' + screenName + '/' + newUser._id);
+        }
       }
-
-      var token = Jwt.sign(newUser, Config.secret);
-
-      return res.redirect('/settings?token=' + token + '&name=' + screenName + '&userId=' + newUser._id);
-    });
+    );
   });
 }
 

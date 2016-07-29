@@ -67,6 +67,10 @@ angular
         window.location.href = '/auth/twitter';
       }
     })
+    .when('/twitterCallback/:token', {
+      templateUrl: 'views/twitter/callback.html',
+      controller: 'TwitterCtrl'
+    })
     .when('/myboard',{
       templateUrl: 'views/pics/myboard.html',
       controller: 'MyBoardCtrl'
@@ -83,7 +87,7 @@ angular
       templateUrl : 'views/settings/index.html',
       controller : 'SettingsCtrl'
     })
-    .when('/settings/:token', {
+    .when('/settings/:token/:name/:userId', {
       templateUrl : 'views/settings/index.html',
       controller : 'SettingsCtrl'
     });

@@ -39,7 +39,7 @@ PicsController.all = function(req, res) {
   var token = Helpers.getToken(req.headers);
   
   Pic.find({})
- .populate('owner')
+ .populate('owner', 'local.name _id')
  .exec(function(err, pics) {
     return res.json({success: true, pics : pics});
   });

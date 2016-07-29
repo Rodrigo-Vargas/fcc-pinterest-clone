@@ -2,6 +2,10 @@
 
 angular.module('pinterestClone')
 .controller('UserCtrl', function($scope, $http, UserService, $location){
+  $scope.currentUser = UserService.getCurrentUserInfo();
+
+  if ($scope.currentUser)
+      $location.path('/');
 
   $scope.signup = function() {
     if ($scope.formData.email != undefined
@@ -27,26 +31,29 @@ angular.module('pinterestClone')
   }
 
   $scope.login = function() {
-    if ($scope.formData.email != undefined
-        && $scope.formData.password != undefined) {
-      $scope.loading = true;
+    if ($scope.formData.email == undefined
+        || $scope.formData.password == undefined)
+      return;
 
-      $http.post('/api/login', $scope.formData)
+    $scope.loading = true;
 
-      .then(function successCallback(response) {
-          if (response.data.success == true){
-            UserService.setCurrentUserInfo(response.data.user);
+    $http.post('/api/login', $scope.formData)
 
-            $location.path("/");
-          }
-          else
-          {
-            $scope.message = response.data.message;
-          }
-        }, function errorCallback(response) {
-          alert(response.data);
-        });
-    }
-  }
+    .then(
+      function successCallback(response) {
+        if (response.data.success == true){
+          UserService.setCurrentUserInfo(response.data.user);
 
+          $location.path("/");
+        }
+        else
+        {
+          $scope.message = response.data.message;
+        }
+      }, 
+      function errorCallback(response) {
+        alert(response.data);
+      }
+    );    
+  } 
 });

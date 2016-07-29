@@ -111,7 +111,9 @@ UsersController.getCurrent = function(req, res) {
 
     var currentUser = {
                         name : user.getName(),
-                        email : user.local.email
+                        email : user.local.email,
+                        id : user._id,
+                        token : 'JWT ' + token
                       }
 
     return res.json({success: true, user : currentUser });

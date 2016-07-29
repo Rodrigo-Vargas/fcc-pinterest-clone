@@ -2,17 +2,29 @@
 
 angular.module('pinterestClone')
 .controller('SettingsCtrl', function($scope, $http, $location, UserService, $routeParams){
-  $scope.currentUser = UserService.getCurrentUserInfo();
+  $scope.user = {};
 
+  if ($routeParams.token)
+  {
+    var userInfo =  {
+                      token : 'JWT ' + $routeParams.token,
+                      name  :  $routeParams.name,
+                      id : $routeParams.userId
+                    };
+
+    UserService.setCurrentUserInfo(userInfo);
+    $scope.user.name = $location.search().name;
+  }  
+  
+  $scope.currentUser = UserService.getCurrentUserInfo();  
+  
   $scope.loading = 0;
 
   if (!$scope.currentUser && !$routeParams.token)
   {
     $location.path('/login');
     return;
-  }
-
-  $scope.user = {};
+  } 
 
   var headers = {
     'Authorization': $scope.currentUser.token,
@@ -54,19 +66,8 @@ angular.module('pinterestClone')
     );
   }
 
-  if ($routeParams.token)
-  {
-    var userInfo =  {
-                      token : 'JWT ' + $location.search().token,
-                      name  :  $location.search().name,
-                      id : $location.search().userId
-                    };
-
-    UserService.setCurrentUserInfo(userInfo);
-    $scope.currentUser = UserService.getCurrentUserInfo();
-    $scope.user.name = $location.search().name;
-  }
-  else
+  
+  if (!$routeParams.token)
   {
     $scope.getCurrentUser();
   }
