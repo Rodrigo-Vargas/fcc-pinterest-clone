@@ -11,6 +11,7 @@ var routes     = require('./api/routes/index.js');
 var app        = express();
 var mongoUrl   = process.env.MONGODB_URI || "mongodb://localhost:27017/rvg-picterest";
 var port       = process.env.PORT || 3000;
+require('dotenv').config();
 
 app.use(morgan('dev'));
 

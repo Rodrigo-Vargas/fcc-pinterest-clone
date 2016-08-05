@@ -1,29 +1,32 @@
-var AuthConfig    = require(process.cwd() + '/config/auth')
 var Jwt           = require('jsonwebtoken');
 var User          = require('../models/user');
 var Config        = require('../../config/secret');
+var Request       =  require("request");
+var OAuth         = require('oauth-1.0a');
 
 function TwitterAuthController () { }
 
 TwitterAuthController.login = function(req, res){
-  var request = require("request");
+  var oauth = OAuth({
+    consumer: {
+      public: process.env.TWITTER_KEY,
+      secret: process.env.TWITTER_SECRET
+    },
+    signature_method: 'HMAC-SHA1'
+  });
+
+  var request_data = {
+    method: 'POST',
+    url: 'https://api.twitter.com/oauth/request_token'
+  }
 
   var options = { 
-    method: 'POST',
-    url: 'https://api.twitter.com/oauth/request_token',
-    headers: 
-    { 
-      'cache-control': 'no-cache',
-      'authorization': 'OAuth  oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
-                            + 'oauth_signature_method="HMAC-SHA1",'
-                            + 'oauth_timestamp="' + AuthConfig.twitter.timestamp + '",'
-                            + 'oauth_nonce="DtOesU",'
-                            + 'oauth_version="1.0",'
-                            + 'oauth_signature="' + AuthConfig.twitter.signature + '"' 
-    }        
-   };
+    method: request_data.method,
+    url: request_data.url,
+    headers: oauth.toHeader(oauth.authorize(request_data))
+   }
 
-  request(options, function (error, response, body) {
+  Request(options, function (error, response, body) {
     if (error) 
       throw new Error(error);
 
@@ -38,24 +41,33 @@ TwitterAuthController.login = function(req, res){
 }
 
 TwitterAuthController.callback = function(req, res){
-  var request = require("request");
+  var oauth = OAuth({
+    consumer: {
+      public: process.env.TWITTER_KEY,
+       secret: process.env.TWITTER_SECRET
+    },
+    signature_method: 'HMAC-SHA1'
+  });
 
-  var options = { method: 'POST',
+  var requestData = {
+    method: 'POST',
     url: 'https://api.twitter.com/oauth/access_token',
-    headers: 
-     { 'postman-token': '2e15fd36-67d0-a9ad-cd3b-e6fdec1e46d7',
-       'cache-control': 'no-cache',
-       'authorization': 'OAuth oauth_consumer_key="' + AuthConfig.twitter.consumerKey + '",'
-       + 'oauth_token="' + req.query.oauth_token + '",'
-       + 'oauth_signature_method="HMAC-SHA1",'
-       + 'oauth_timestamp="' + Math.floor(new Date().getTime() / 1000) + '",'
-       + 'oauth_nonce="QmMmNI",'
-       + 'oauth_version="1.0",'
-       + 'oauth_signature="cX0TO3xlkatnMvx%2BEv6pdoU7Tbk%3D"',
-       'content-type': 'multipart/form-data; boundary=---011000010111000001101001' },
-    formData: { oauth_verifier: req.query.oauth_verifier } };
+    data : { oauth_verifier: req.query.oauth_verifier }
+  }
 
-  request(options, function (error, response, body) {
+  var token = {
+                public : req.query.oauth_token,
+                secret : req.query.oauth_verifier
+              }
+
+  var options = { 
+    method : requestData.method,
+    url: requestData.url,
+    headers: oauth.toHeader(oauth.authorize(requestData, token)),
+    form : requestData.data
+  }
+
+  Request(options, function (error, response, body) {
     if (error) 
       throw new Error(error);
 
@@ -83,6 +95,8 @@ TwitterAuthController.callback = function(req, res){
           var newUser = new User();
           newUser.local.name = screenName;
           newUser.local.email = "";
+
+          newUser.save();
 
           var token = Jwt.sign(newUser, Config.secret);
           

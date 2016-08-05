@@ -21,8 +21,7 @@ UsersController.update = function(req, res) {
 
     user.local.name  = req.body.user.name;
     user.local.email = req.body.user.email;
-
-    if (!req.body.user.password)
+    if (req.body.user.password)
       user.local.password = user.generateHash(req.body.user.password);
 
     user.save();
